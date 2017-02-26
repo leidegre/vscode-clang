@@ -54,7 +54,7 @@ function activate(context) {
 
         var command = `clang ${args.join(' ')} \"${fn}\"`;
 
-        child_process.exec(command, (err, stdout, stderr) => {
+        child_process.exec(command, { cwd: vscode.workspace.rootPath }, (err, stdout, stderr) => {
             var ch = crateOutputChannel();
             ch.clear();
             ch.appendLine(stderr);

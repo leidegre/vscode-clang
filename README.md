@@ -74,6 +74,10 @@ Analysis for multiple documents in parallel is done when configuration is update
 
 ## Release Notes
 
+### 0.0.3
+
+Bugfix: workspace relative include search paths.
+
 ### 0.0.2
 
 Bugfix: support multiple source range info hints for the same diagnostic.

@@ -2,6 +2,11 @@
 
 All notable changes to extension will be documented in this file.
 
+## [0.0.3] - 2017-02-26
+
+### Changed
+- Child process anchored at workspace.rootPath. Fixes issues with relative include search paths but they have to be relative the workspace.rootPath.
+
 ## [0.0.2] - 2017-02-26
 
 ### Changed
