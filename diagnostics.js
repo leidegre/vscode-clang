@@ -8,8 +8,8 @@ function ClangDiagnostic() {
   this.message = "";
 }
 
-var diagnosticPattern = /^:(\d+):(\d+):/;
-var diagnosticPattern2 = /^\{(\d+):(\d+)-(\d+):(\d+)\}/;
+var diagnosticPattern = /^:(\d+):(\d+)/;
+var diagnosticPattern2 = /^:?\{(\d+):(\d+)-(\d+):(\d+)\}/;
 var diagnosticPattern3 = /^:\s*([^:]+):\s*/;
 
 function parseDiagnostic(s) {
