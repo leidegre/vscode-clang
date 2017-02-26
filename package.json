@@ -1,0 +1,57 @@
+{
+    "name": "jlang-clang",
+    "displayName": "jlang-clang",
+    "description": "Adds support for clang (C/C++) diagnostics on Windows.",
+    "version": "0.0.1",
+    "publisher": "l3dg3r",
+    "engines": {
+        "vscode": "^1.5.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onLanguage:cpp"
+    ],
+    "main": "./extension",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Clang (C/C++) diagnostics configuration.",
+            "properties": {
+                "clang.diagnostics.system.cpppath": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [],
+                    "description": "Add directory to include search path (-isystem)."
+                },
+                "clang.diagnostics.cpppath": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [],
+                    "description": "Add directory to include search path (-I)."
+                },
+                "clang.diagnostics.cxxopts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [],
+                    "description": "Command line options (passed as-is) for C++ files."
+                }
+            }
+        }
+    },
+    "devDependencies": {
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0",
+        "mocha": "^2.3.3",
+        "eslint": "^3.6.0",
+        "@types/node": "^6.0.40",
+        "@types/mocha": "^2.2.32"
+    }
+}
