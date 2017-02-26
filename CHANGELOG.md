@@ -1,7 +1,8 @@
 # Change Log
-All notable changes to the "jlang-clang" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+All notable changes to extension will be documented in this file.
 
-## [Unreleased]
-- Initial release
+## [0.0.2] - 2017-02-26
+
+### Changed
+- Clang output for last command is always kept in output channel "Clang diagnostics", used to be only for fatal errors. Focus is still only changed if a fatal error occurs.

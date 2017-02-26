@@ -55,6 +55,10 @@ function activate(context) {
         var command = `clang ${args.join(' ')} \"${fn}\"`;
 
         child_process.exec(command, (err, stdout, stderr) => {
+            var ch = crateOutputChannel();
+            ch.clear();
+            ch.appendLine(stderr);
+
             var split = (stderr || "").split(/\n+/);
             var ds = [];
             var i = 0, j = 0; // todo: prepend unmatches lines
@@ -72,26 +76,24 @@ function activate(context) {
                             severity = vscode.DiagnosticSeverity.Error;
                             break;
                     }
-                    ds.push(new vscode.Diagnostic(d.range, d.message, severity));
+                    if (d.ranges.length > 0) {
+                        for (var i in d.ranges) {
+                            ds.push(new vscode.Diagnostic(d.ranges[i], d.message, severity));
+                        }
+                    } else {
+                        ds.push(new vscode.Diagnostic(new vscode.Range(d.start, d.start), d.message, severity));
+                    }
                 }
             }
             diagnosticCollection.set(e.uri, ds);
+
             if (err) {
-                // Fatal errors can be user errors but also
-                // more subtle and configuration related.
-                var ch = crateOutputChannel();
-                ch.clear();
-                ch.appendLine(stderr);
                 if (ds.length == 0) {
                     // If we have no diagnostics for this file 
                     // then it's _probably_ a configuration error.
                     ch.show(false);
                 }
                 return;
-            } else {
-                if (outputChannel) {
-                    outputChannel.clear();
-                }
             }
         });
     }

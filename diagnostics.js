@@ -3,14 +3,13 @@ var vscode = require("vscode");
 
 function ClangDiagnostic() {
   this.start = null;
-  this.end = null;
-  this.range = null;
+  this.ranges = [];
   this.category = null;
   this.message = "";
 }
 
-var diagnosticPattern = /^:(\d+):(\d+)/;
-var diagnosticPattern2 = /^:\{(\d+):(\d+)-(\d+):(\d+)\}/;
+var diagnosticPattern = /^:(\d+):(\d+):/;
+var diagnosticPattern2 = /^\{(\d+):(\d+)-(\d+):(\d+)\}/;
 var diagnosticPattern3 = /^:\s*([^:]+):\s*/;
 
 function parseDiagnostic(s) {
@@ -25,20 +24,18 @@ function parseDiagnostic(s) {
   }
 
   m = diagnosticPattern2.exec(s);
-  if (m) {
-    let ln, ch;
+  while (m) {
+    let ln, ch, start, end;
     ln = parseInt(m[1]);
     ch = parseInt(m[2]);
-    d.start = new vscode.Position(ln - 1, ch - 1);
+    start = new vscode.Position(ln - 1, ch - 1);
     ln = parseInt(m[3]);
     ch = parseInt(m[4]);
-    d.end = new vscode.Position(ln - 1, ch - 1);
+    end = new vscode.Position(ln - 1, ch - 1);
+    d.ranges.push(new vscode.Range(start, end));
     s = s.substring(m[0].length);
-  } else {
-    d.end = d.start;
+    m = diagnosticPattern2.exec(s);
   }
-
-  d.range = new vscode.Range(d.start, d.end);
 
   m = diagnosticPattern3.exec(s);
   if (m) {

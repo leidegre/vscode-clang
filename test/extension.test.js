@@ -43,4 +43,11 @@ suite("Output parsing test", function () {
             "src\\game\\main.cc:16:11: note: use '==' to turn this assignment into an equality comparison"
         ];
     });
+
+    test("test 4", function () {
+        var tv = [
+            "src\\game\\main.cc:10:43:{10:43-10:49}{10:31-10:33}: warning: format specifies type 'unsigned int' but the argument has type 'unsigned long' [-Wformat]",
+            "src\\game\\main.cc:10:51:{10:51-10:57}{10:35-10:37}: warning: format specifies type 'unsigned int' but the argument has type 'unsigned long' [-Wformat]"
+        ];
+    });
 });
