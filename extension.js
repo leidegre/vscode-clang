@@ -119,9 +119,11 @@ function activate(context) {
             // clear all diagnostics previously set by fn
             for (let k in diagnosticOrigin) {
                 if (diagnosticOrigin[k] === fn) {
-                    diagnosticCollection.delete(vscode.Uri.file(path.join(vscode.workspace.rootPath, fn)));
+                    diagnosticCollection.delete(vscode.Uri.file(path.join(vscode.workspace.rootPath, k)));
                 }
             }
+            // ..and self
+            diagnosticCollection.delete(vscode.Uri.file(path.join(vscode.workspace.rootPath, fn)));
 
             // update all diagnostics for fn (with friends)
             for (let k in ds) {

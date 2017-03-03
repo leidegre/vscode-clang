@@ -74,7 +74,7 @@ Analysis for multiple documents in parallel is done when configuration is update
 
 ## Release Notes
 
-### 0.0.7
+### 0.0.7 - 0.0.8
 
 Bugfix: Track where diagnostics goes to prevent stale diagnostics from lingering.
 
