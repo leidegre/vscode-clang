@@ -3,8 +3,6 @@ var path = require('path');
 var child_process = require('child_process');
 var diagnostics = require("./diagnostics");
 
-var diagnosticCollection;
-
 // The output channel is called "Clang diagnostics" and only used for fatal errors,
 // errors that prevent Clang from completing its analysis. There errors can be user
 // or configuration related. Fatal errors that generate no diagnostic for the file
@@ -18,15 +16,17 @@ function crateOutputChannel() {
     return outputChannel;
 }
 
+var diagnosticCollection, diagnosticOrigin;
 function activate(context) {
-    diagnosticCollection = vscode.languages.createDiagnosticCollection();
+    diagnosticCollection = vscode.languages.createDiagnosticCollection("Clang diagnostics");
+    diagnosticOrigin = {};
 
     function didSaveTextDocument(e) {
         if (!((e.languageId === 'c') || (e.languageId === 'cpp'))) {
             return;
         }
 
-        var fn = vscode.workspace.asRelativePath(e.fileName);
+        var fn = path.normalize(vscode.workspace.asRelativePath(e.fileName));
 
         var conf = vscode.workspace.getConfiguration('clang.diagnostics');
 
@@ -116,13 +116,22 @@ function activate(context) {
                 }
             }
 
+            // clear all diagnostics previously set by fn
+            for (let k in diagnosticOrigin) {
+                if (diagnosticOrigin[k] === fn) {
+                    diagnosticCollection.delete(vscode.Uri.file(path.join(vscode.workspace.rootPath, fn)));
+                }
+            }
+
+            // update all diagnostics for fn (with friends)
             for (let k in ds) {
                 diagnosticCollection.set(vscode.Uri.file(path.join(vscode.workspace.rootPath, k)), ds[k]);
+                diagnosticOrigin[k] = fn;
             }
 
             if (err) {
                 if (ds.length == 0) {
-                    // If we have no diagnostics for this file 
+                    // If it's a fatal error but we have no diagnostics,
                     // then it's _probably_ a configuration error.
                     ch.show(false);
                 }
@@ -151,5 +160,6 @@ function deactivate() {
         outputChannel.dispose();
     }
     diagnosticCollection.dispose();
+    diagnosticOrigin = null;
 }
 exports.deactivate = deactivate;

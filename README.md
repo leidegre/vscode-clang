@@ -74,6 +74,10 @@ Analysis for multiple documents in parallel is done when configuration is update
 
 ## Release Notes
 
+### 0.0.7
+
+Bugfix: Track where diagnostics goes to prevent stale diagnostics from lingering.
+
 ### 0.0.6
 
 Feature: Diagnostics from files other than the main file passed to Clang are now shown.
