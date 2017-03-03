@@ -74,6 +74,14 @@ Analysis for multiple documents in parallel is done when configuration is update
 
 ## Release Notes
 
+### 0.0.6
+
+Feature: Diagnostics from files other than the main file passed to Clang are now shown.
+
+### 0.0.5
+
+Bugfix: Fixed nasty bug where inner loop variable shadowed outer loop variable and caused infinite loop.
+
 ### 0.0.4
 
 Bugfix: Clang diagnostics parse error.

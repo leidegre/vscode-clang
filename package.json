@@ -2,7 +2,7 @@
     "name": "jlang-clang",
     "displayName": "jlang-clang",
     "description": "Adds support for clang (C/C++) diagnostics on Windows.",
-    "version": "0.0.4",
+    "version": "0.0.6",
     "publisher": "l3dg3r",
     "engines": {
         "vscode": "^1.5.0"

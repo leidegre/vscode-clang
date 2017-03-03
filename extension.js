@@ -26,7 +26,7 @@ function activate(context) {
             return;
         }
 
-        var fn = e.fileName;
+        var fn = vscode.workspace.asRelativePath(e.fileName);
 
         var conf = vscode.workspace.getConfiguration('clang.diagnostics');
 
@@ -54,38 +54,71 @@ function activate(context) {
 
         var command = `clang ${args.join(' ')} \"${fn}\"`;
 
+        var ch = crateOutputChannel();
+        ch.clear();
+        ch.appendLine(command);
+
         child_process.exec(command, { cwd: vscode.workspace.rootPath }, (err, stdout, stderr) => {
-            var ch = crateOutputChannel();
-            ch.clear();
             ch.appendLine(stderr);
 
-            var split = (stderr || "").split(/\n+/);
-            var ds = [];
-            var i = 0, j = 0; // todo: prepend unmatches lines
+            let ds = {};
+            function pushDiagnostic(relativePath, diagnostic) {
+                var arr = ds[relativePath] || (ds[relativePath] = []);
+                arr.push(diagnostic);
+            }
+
+            let split = (stderr || "").split(/\r?\n/);
+
+            let i = 0;//, j = 0;
             for (; i < split.length; i++) {
-                if (split[i].indexOf(fn) == 0) {
-                    var s = split[i].substring(fn.length);
-                    var d = diagnostics.parseDiagnostic(s);
-                    var severity = vscode.DiagnosticSeverity.Hint;
-                    switch (d.category) {
-                        case "warning":
-                            severity = vscode.DiagnosticSeverity.Warning;
-                            break;
-                        case "fatal error":
-                        case "error":
-                            severity = vscode.DiagnosticSeverity.Error;
-                            break;
-                    }
-                    if (d.ranges.length > 0) {
-                        for (var i in d.ranges) {
-                            ds.push(new vscode.Diagnostic(d.ranges[i], d.message, severity));
+
+                // clang can spit out errors in any file it touches regardless of entry point
+
+                let ln = split[i];
+                let startIndex = ln.indexOf(":");
+                if (startIndex > 0) {
+                    let path2 = ln.substring(0, startIndex);
+                    let path3 = path.normalize(path2);
+
+                    let d = diagnostics.parseDiagnostic(ln.substring(startIndex));
+                    if (d) {
+                        // This is a nice idea but it doesn't present very well in the problems view
+                        // the user should check the "Clang diagnostics" output channel for this information.
+
+                        // let prepend;
+                        // for (; j < i; j++) {
+                        //     prepend = (prepend || "") + split[j] + "\n";
+                        // }
+
+                        let message = d.message;
+                        // if (prepend) {
+                        //     message = prepend + message;
+                        // }
+
+                        let severity = vscode.DiagnosticSeverity.Hint;
+                        switch (d.category) {
+                            case "warning":
+                                severity = vscode.DiagnosticSeverity.Warning;
+                                break;
+                            case "fatal error":
+                            case "error":
+                                severity = vscode.DiagnosticSeverity.Error;
+                                break;
                         }
-                    } else {
-                        ds.push(new vscode.Diagnostic(new vscode.Range(d.start, d.start), d.message, severity));
+                        if (d.ranges.length > 0) {
+                            for (let k in d.ranges) {
+                                pushDiagnostic(path3, new vscode.Diagnostic(d.ranges[k], message, severity));
+                            }
+                        } else {
+                            pushDiagnostic(path3, new vscode.Diagnostic(new vscode.Range(d.start, d.start), message, severity));
+                        }
                     }
                 }
             }
-            diagnosticCollection.set(e.uri, ds);
+
+            for (let k in ds) {
+                diagnosticCollection.set(vscode.Uri.file(path.join(vscode.workspace.rootPath, k)), ds[k]);
+            }
 
             if (err) {
                 if (ds.length == 0) {

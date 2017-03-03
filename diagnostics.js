@@ -21,6 +21,8 @@ function parseDiagnostic(s) {
     let ch = parseInt(m[2]);
     d.start = new vscode.Position(ln - 1, ch - 1);
     s = s.substring(m[0].length);
+  } else {
+    return null;
   }
 
   m = diagnosticPattern2.exec(s);
@@ -41,6 +43,8 @@ function parseDiagnostic(s) {
   if (m) {
     d.category = m[1];
     s = s.substring(m[0].length);
+  } else {
+    return null;
   }
 
   d.message = s;

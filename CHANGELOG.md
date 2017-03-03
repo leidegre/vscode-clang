@@ -2,6 +2,11 @@
 
 All notable changes to extension will be documented in this file.
 
+## [0.0.6] - 2017-03-02
+
+### Changed
+- Relative paths anchored at the workspace root instead of absolute paths are now used when invoking `clang`.
+
 ## [0.0.3] - 2017-02-26
 
 ### Changed
