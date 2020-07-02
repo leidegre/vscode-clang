@@ -30,10 +30,10 @@ System include search paths never yield diagnostics.
 
 These are system internals and not something which I find to be well documented. However, it's relativly simple to reverse engineer.
 
-1. Download Sysinternals Process Monitor (procmon). 
+1. Download Sysinternals Process Monitor (procmon).
 2. Add two filters
-    1. *Process Name* is `cl.exe` (Visual C++)
-    2. *Path* contains `<header file name>`
+   1. _Process Name_ is `cl.exe` (Visual C++)
+   2. _Path_ contains `<header file name>`
 3. Enable capture
 4. Invoke compiler (as you would to build normally).
 
@@ -52,6 +52,10 @@ Review the path information and set up include search paths accordingly.
 `cpppath` include search paths. Subject to diagnostics. Include search paths are escaped as needed depending on platform. Note that Windows is the only supported platform, as of writing. `system.cpppath` is identical to `cpppath` except that no diagnostics is reported for these files.
 
 `cxxopts` clang (C++) compiler frontend command line options. These are passed to the compiler as-is.
+
+### Warnings
+
+For a comprehensive list of warnings that clang generates, see [this](https://clang.llvm.org/docs/DiagnosticsReference.html) reference.
 
 ### Implementation details
 
@@ -73,6 +77,10 @@ There's no way to distinguish what the cause of a Clang fatal error is, as such,
 Analysis for multiple documents in parallel is done when configuration is updated. This can result in output getting lost in the output window. This only happens when the configuration is changed while more than 1 document with the `c` or `cpp` VS Code `<languageid>` is open at the same time.
 
 ## Release Notes
+
+### 0.0.10
+
+Feature: Added support for expansion of environment variables in settings `clang.diagnostics.system.cpppath` and `clang.diagnostics.cpppath`. There's no service for this that extensions can consume so you can only use the `${env:VAR}` syntax to expand environment variables as well as `${workspaceFolder}`. These are the only variables that are support by this extension.
 
 ### 0.0.7 - 0.0.8
 

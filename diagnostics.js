@@ -1,5 +1,4 @@
-
-var vscode = require("vscode");
+const vscode = require("vscode");
 
 function ClangDiagnostic() {
   this.start = null;
@@ -8,9 +7,9 @@ function ClangDiagnostic() {
   this.message = "";
 }
 
-var diagnosticPattern = /^:(\d+):(\d+)/;
-var diagnosticPattern2 = /^:?\{(\d+):(\d+)-(\d+):(\d+)\}/;
-var diagnosticPattern3 = /^:\s*([^:]+):\s*/;
+const diagnosticPattern = /^:(\d+):(\d+)/;
+const diagnosticPattern2 = /^:?\{(\d+):(\d+)-(\d+):(\d+)\}/;
+const diagnosticPattern3 = /^:\s*([^:]+):\s*/;
 
 function parseDiagnostic(s) {
   var d = new ClangDiagnostic();
